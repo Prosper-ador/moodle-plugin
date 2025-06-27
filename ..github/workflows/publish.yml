@@ -1,0 +1,41 @@
+name: Build and Publish WASM npm package
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'moodle-plugin/hello_world_lib/**'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Install wasm-pack
+        run: cargo install wasm-pack
+
+      - name: Build WASM package
+        working-directory: ./moodle-plugin/hello_world_lib
+        run: wasm-pack build --target web
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com/'
+
+      - name: Publish to GitHub Packages
+        working-directory: ./moodle-plugin/hello_world_lib/pkg
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
