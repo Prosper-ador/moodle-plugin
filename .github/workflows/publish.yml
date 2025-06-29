@@ -9,6 +9,12 @@ on:
       - 'moodle-plugin/hello_world_lib/**'
     tags:
       - 'v*' #Triggers on version tags like v0.1.0
+  pull_request:
+    branches:
+      - main
+      - add-wasm-generator-issue-13
+    paths:
+      - 'moodle-plugin/hello_world_lib/**'
 
 jobs:
   build-and-publish:
