@@ -6,7 +6,7 @@ on:
       - main
       - add-wasm-generator-issue-13
     tags:
-      - 'v*'
+      - 'v*' # Trigger on version tags like v0.1.0
   pull_request:
     branches:
       - main
@@ -17,31 +17,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Rust
+      - name: 🦀 Set up Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
 
-      - name: Install wasm-pack
+      - name: 📦 Install wasm-pack
         run: cargo install wasm-pack
 
-      - name: Build WASM package
-        working-directory: ./moodle-plugin/hello_world_lib
-        run: wasm-pack build --target web
+      - name: 🧱 Build WASM package with wasm-pack
+        working-directory: ./hello_world_lib
+        run: wasm-pack build --target bundler
 
-      - name: Set up Node.js for GitHub Packages
+      - name: ⚙️ Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://npm.pkg.github.com/'
           scope: '@prosper-ador'
 
-      - name: Publish to GitHub Packages
-        working-directory: ./moodle-plugin/hello_world_lib/pkg
+      - name: 🛠 Install Rollup & dependencies
+        working-directory: ./hello_world_lib
+        run: npm install
+
+      - name: 🛠 Build JS bundle with Rollup
+        working-directory: ./hello_world_lib
+        run: npx rollup -c
+
+      - name: 📝 Create .npmrc
+        working-directory: ./hello_world_lib
+        run: |
+          echo "@prosper-ador:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+
+      - name: 🚀 Publish to GitHub Packages
+        working-directory: ./hello_world_lib/pkg
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
