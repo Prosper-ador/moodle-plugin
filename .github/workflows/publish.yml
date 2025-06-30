@@ -1,21 +1,16 @@
 name: Build and Publish WASM npm package
 
-
 on:
   push:
     branches:
       - main
       - add-wasm-generator-issue-13
-    paths:
-      - 'moodle-plugin/hello_world_lib/**'
     tags:
-      - 'v*' #Triggers on version tags like v0.1.0
+      - 'v*'
   pull_request:
     branches:
       - main
       - add-wasm-generator-issue-13
-    paths:
-      - 'moodle-plugin/hello_world_lib/**'
 
 jobs:
   build-and-publish:
@@ -46,8 +41,6 @@ jobs:
 
       - name: Publish to GitHub Packages
         working-directory: ./moodle-plugin/hello_world_lib/pkg
-        run: |
-          cd ./moodle-plugin/hello_world_lib/pkg
-          npm publish
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
