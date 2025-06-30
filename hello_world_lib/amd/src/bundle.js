@@ -1,30 +1,3 @@
-
-function _loadWasmModule (sync, src, imports) {
-        var len = src.length
-        var trailing = src[len-2] == '=' ? 2 : src[len-1] == '=' ? 1 : 0
-        var buf = new Uint8Array((len * 3/4) - trailing)
-
-        var _table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-        var table = new Uint8Array(130)
-        for (var c = 0; c < _table.length; c++) table[_table.charCodeAt(c)] = c
-
-        for (var i = 0, b = 0; i < len; i+=4) {
-          var second = table[src.charCodeAt(i+1)]
-          var third = table[src.charCodeAt(i+2)]
-          buf[b++] = (table[src.charCodeAt(i)] << 2) | (second >> 4)
-          buf[b++] = ((second & 15) << 4) | (third >> 2)
-          buf[b++] = ((third & 3) << 6) | (table[src.charCodeAt(i+3)] & 63)
-        }
-
-        if (imports && !sync) {
-          return WebAssembly.instantiate(buf, imports)
-        } else if (!imports && !sync) {
-          return WebAssembly.compile(buf)
-        } else {
-          var mod = new WebAssembly.Module(buf)
-          return imports ? new WebAssembly.Instance(mod, imports) : mod
-        }
-      }
 define(['module', 'exports'], (function (module, exports) { 'use strict';
 
     let wasm;
@@ -203,14 +176,12 @@ define(['module', 'exports'], (function (module, exports) { 'use strict';
         return __wbg_finalize_init(instance, module$1);
     }
 
-    const initRust = async () => {
+    async function initRust() {
       await __wbg_init('/local/wasmplugin/amd/src/hello_world_lib_bg.wasm');
       const msg = greet("Moodle from Rust");
       const div = document.getElementById("rust-output");
       if (div) div.textContent = msg;
-    };
-
-    initRust();
+    }
 
     exports.initRust = initRust;
 
