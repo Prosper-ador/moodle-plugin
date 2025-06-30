@@ -30,7 +30,7 @@ jobs:
         run: cargo install wasm-pack
 
       - name: Build WASM package
-        working-directory: ./moodle-plugin/hello_world_lib
+        working-directory: ./hello_world_lib
         run: wasm-pack build --target web
 
       - name: Set up Node.js
@@ -40,7 +40,7 @@ jobs:
           registry-url: 'https://npm.pkg.github.com/'
 
       - name: Publish to GitHub Packages
-        working-directory: ./moodle-plugin/hello_world_lib/pkg
+        working-directory: ./hello_world_lib/pkg
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
