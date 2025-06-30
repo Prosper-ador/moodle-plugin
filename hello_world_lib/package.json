@@ -2,6 +2,7 @@
   "name": "@prosper-ador/hello_world_lib",
   "version": "0.1.0",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "build": "rollup -c"
   },
