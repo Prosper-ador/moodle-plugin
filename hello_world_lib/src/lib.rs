@@ -4,4 +4,3 @@ use wasm_bindgen::prelude::*;
 pub fn greet(name: &str) -> String {
     format!("Hello, {name} from Rust!")
 }
-
