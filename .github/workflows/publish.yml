@@ -31,7 +31,7 @@ jobs:
 
       - name: 🧱 Build WASM package with wasm-pack
         working-directory: ./hello_world_lib
-        run: wasm-pack build --target web
+        run: wasm-pack build --target web --scope prosper-ador
 
       - name: ⚙️ Set up Node.js
         uses: actions/setup-node@v4
@@ -54,9 +54,9 @@ jobs:
           echo "@prosper-ador:registry=https://npm.pkg.github.com/" > .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
       
-      - name: 🐞 Debug .npmrc
+      - name: 🐞 Debug .npmrc and package.json
         working-directory: ./hello_world_lib/pkg
-        run: cat .npmrc && ls -la
+        run: cat .npmrc && ls -la && cat package.json
 
       - name: 🚀 Publish to GitHub Packages
         working-directory: ./hello_world_lib/pkg
